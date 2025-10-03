@@ -1,0 +1,55 @@
+name: CI/CD
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      mongo:
+        image: mongo:6
+        ports: ["27017:27017"]
+        options: >-
+          --health-cmd="mongosh --eval 'db.adminCommand({ ping: 1 })'"
+          --health-interval=10s --health-timeout=5s --health-retries=5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "npm"
+      - run: npm ci
+      - name: Run tests
+        run: npm test
+        env:
+          MONGO_URI: mongodb://localhost:27017/test
+
+  docker:
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - uses: actions/checkout@v4
+      - name: Define image
+        id: vars
+        run: echo "IMAGE=ghcr.io/${{ github.repository_owner }}/nodejs-api-cicd-demo" >> $GITHUB_OUTPUT
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build image
+        run: |
+          docker build -t ${{ steps.vars.outputs.IMAGE }}:latest \
+                       -t ${{ steps.vars.outputs.IMAGE }}:${{ github.sha }} .
+      - name: Push image
+        run: |
+          docker push ${{ steps.vars.outputs.IMAGE }}:latest
+          docker push ${{ steps.vars.outputs.IMAGE }}:${{ github.sha }}

@@ -1,0 +1,14 @@
+services:
+  mongo:
+    image: mongo:6
+    ports:
+      - "27017:27017"
+
+  api:
+    build: .
+    environment:
+      MONGO_URI: mongodb://mongo:27017/demo
+    ports:
+      - "3000:3000"
+    depends_on:
+      - mongo
