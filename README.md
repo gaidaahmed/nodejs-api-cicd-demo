@@ -52,3 +52,4 @@ docker compose down
 
 
 CI/CD
+![CI/CD](https://github.com/gaidaahmed/nodejs-api-cicd-demo/actions/workflows/ci-cd.yml/badge.svg)
