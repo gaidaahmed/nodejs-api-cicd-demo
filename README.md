@@ -4,7 +4,7 @@ API **Express** + **MongoDB**, packagée avec **Docker Compose** et publiée sur
 
 ---
 
-## Lancer en local (Docker Compose)
+## ⚡ Lancer en local (Docker Compose)
 
 ```bash
 # démarrer l’API + MongoDB
@@ -16,8 +16,7 @@ curl -X POST http://localhost:3000/notes -H "Content-Type: application/json" -d 
 
 # arrêter les conteneurs
 docker compose down
-
-Utiliser l’image publique (depuis GHCR)
+🐳 Utiliser l’image publique (depuis GHCR)
 # 1) créer un réseau Docker partagé
 docker network create demo-net
 
@@ -39,8 +38,7 @@ curl -X POST http://localhost:3000/notes -H "Content-Type: application/json" -d 
 docker rm -f mongo
 docker network rm demo-net
 
-
-Tests (Jest)
+🧪 Tests (Jest)
 # lancer uniquement Mongo
 docker compose up -d mongo
 
@@ -49,7 +47,4 @@ MONGO_URI=mongodb://localhost:27017/test npm test
 
 # arrêter les conteneurs
 docker compose down
-
-
-CI/CD
-![CI/CD](https://github.com/gaidaahmed/nodejs-api-cicd-demo/actions/workflows/ci-cd.yml/badge.svg)
+🔄 CI/CD
